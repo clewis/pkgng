@@ -17,7 +17,17 @@
 # limitations under the License.
 #
 
-# TODO: bootstrap pkgng
+if ::File.executable? '/usr/sbin/pkg'
+  execute '/usr/sbin/pkg' do
+    environment 'ASSUME_ALWAYS_YES' => '1'
+    not_if 'TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg'
+  end
+else
+  package 'pkg' do
+    source 'ports'
+    not_if 'TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg'
+  end
+end
 
 ruby_block 'set pkgng provider' do
   block do
