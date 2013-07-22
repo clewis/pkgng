@@ -18,19 +18,30 @@
 #
 
 if ::File.executable? '/usr/sbin/pkg'
-  execute '/usr/sbin/pkg' do
+  execute '/usr/sbin/pkg info pkg' do
     environment 'ASSUME_ALWAYS_YES' => '1'
-    not_if 'TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg'
+    not_if 'pkg info pkg', :env => {'TMPDIR' => '/dev/null', 'ASSUME_ALWAYS_YES' => '1', 'PACKAGESITE' => 'file:///nonexistent'}
   end
 else
   package 'pkg' do
     source 'ports'
-    not_if 'TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg'
+    not_if 'pkg info pkg', :env => {'TMPDIR' => '/dev/null', 'ASSUME_ALWAYS_YES' => '1', 'PACKAGESITE' => 'file:///nonexistent'}
   end
+end
+
+execute 'pkg2ng' do
+  only_if '[ -n "`pkg_info 2>/dev/null`" ]'
+end
+
+conf_plain_file '/etc/make.conf' do
+  pattern /^WITH_PKGNG=yes$/
+  new_line 'WITH_PKGNG=yes'
+
+  action :insert_if_no_match
 end
 
 ruby_block 'set pkgng provider' do
   block do
-    Chef::Platform.set :platform => :freebsd, :resource => :package => Chef::Provider::Package::Pkgng
+    Chef::Platform.set :platform => :freebsd, :resource => :package, :provider => Chef::Provider::Package::Pkgng
   end
 end
