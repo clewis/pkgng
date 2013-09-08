@@ -33,11 +33,9 @@ execute 'pkg2ng' do
   only_if '[ -n "`pkg_info 2>/dev/null`" ]'
 end
 
-conf_plain_file '/etc/make.conf' do
-  pattern /^WITH_PKGNG=yes$/
-  new_line 'WITH_PKGNG=yes'
-
-  action :insert_if_no_match
+append_if_no_line '/etc/make.conf WITH_PKGNG=yes' do
+  path '/etc/make.conf'
+  line 'WITH_PKGNG=yes'
 end
 
 ruby_block 'set pkgng provider' do
