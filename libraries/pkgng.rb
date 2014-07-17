@@ -29,6 +29,19 @@ class Chef
           pkg_info.stdout[/^#{package_name}-(.*)/, 1]
         end
 
+        def ports_candidate_version
+          pkg_info = shell_out!("pkg search #{package_name}", :env => nil, :returns => [0, 70])
+          pkg_info.stdout[/^#{package_name}-(.*)/, 1]
+        end
+
+        def latest_link_name
+          @new_resource.package_name
+        end
+
+        def package_name
+          @new_resource.package_name
+        end
+
         def install_package(name, version)
           unless @current_resource.version
             case @new_resource.source
