@@ -30,8 +30,21 @@ class Chef
         end
 
         def ports_candidate_version
-          pkg_info = shell_out!("pkg search #{package_name}", :env => nil, :returns => [0, 70])
-          pkg_info.stdout[/^#{package_name}-(.*)/, 1]
+          pkg_search = shell_out!("pkg search #{package_name}", :env => nil, :returns => [0, 70])
+          pkg_search.stdout[/^#{package_name}-(.*)/, 1]
+        end
+
+        def load_current_resource
+          @current_resource.package_name(@new_resource.package_name)
+
+          @current_resource.version(current_installed_version)
+          Chef::Log.debug("#{@new_resource} current version is #{@current_resource.version}") if @current_resource.version
+
+          @candidate_version = ports_candidate_version
+
+          Chef::Log.debug("#{@new_resource} ports candidate version is #{@candidate_version}") if @candidate_version
+
+          @current_resource
         end
 
         def latest_link_name
