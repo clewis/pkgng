@@ -25,7 +25,7 @@ class Chef
     class Package
       class Pkgng < Freebsd
         def current_installed_version
-          pkg_info = shell_out!("pkg info -q #{package_name}", :env => nil, :returns => [0, 70])
+          pkg_info = shell_out!("pkg info -q", :env => nil, :returns => [0, 70])
           pkg_info.stdout[/^#{package_name}-(.*)/, 1]
         end
 
