@@ -8,4 +8,4 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION')) rescue '0
 
 supports 'freebsd', '>= 8.4'
 
-depends 'line', '~> 0.5.1'
+depends 'line', '~> 0.5.2'
