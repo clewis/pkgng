@@ -8,4 +8,4 @@ version          '0.1.1'
 
 supports 'freebsd', '>= 8.4'
 
-depends 'line', '= 0.6.0'
+depends 'line', '= 0.6.1'
